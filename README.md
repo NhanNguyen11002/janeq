@@ -17,6 +17,14 @@ The backend and frontend source directories are bind-mounted for live reload.
 Question data is mounted with the backend source, and exported attempts can be
 written to `backend/exports/`.
 
+## Backend structure
+
+- `backend/app/api/routes/` defines the HTTP endpoints.
+- `backend/app/schemas/` contains request models.
+- `backend/app/services/` contains authentication and attempt-scoring logic.
+- `backend/app/repositories/` handles question data and attempt persistence.
+- `backend/app/core/` contains shared configuration.
+
 ## Demo login accounts
 
 Use any of these DummyJSON demo accounts to sign in to the web app:
