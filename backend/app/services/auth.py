@@ -3,7 +3,7 @@ from typing import Any
 import httpx
 from fastapi import HTTPException, status
 
-from app.core.config import DUMMYJSON_URL
+from app.core.config import AUTH_ACCESS_TOKEN_TTL_MINUTES, DUMMYJSON_URL
 from app.schemas.auth import LoginRequest
 
 
@@ -57,7 +57,11 @@ async def login(request: LoginRequest) -> dict[str, Any]:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{DUMMYJSON_URL}/auth/login",
-                json={"username": request.username, "password": request.password},
+                json={
+                    "username": request.username,
+                    "password": request.password,
+                    "expiresInMins": AUTH_ACCESS_TOKEN_TTL_MINUTES,
+                },
             )
     except httpx.RequestError as error:
         raise HTTPException(
@@ -84,9 +88,66 @@ async def login(request: LoginRequest) -> dict[str, Any]:
         not isinstance(login_data, dict)
         or not isinstance(login_data.get("id"), int)
         or not isinstance(login_data.get("accessToken"), str)
+        or not isinstance(login_data.get("refreshToken"), str)
     ):
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Authentication service returned an invalid login response",
         )
     return login_data
+
+
+async def refresh_auth_session(refresh_token: str | None) -> dict[str, str]:
+    if not refresh_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh session is missing or expired",
+        )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{DUMMYJSON_URL}/auth/refresh",
+                json={
+                    "refreshToken": refresh_token,
+                    "expiresInMins": AUTH_ACCESS_TOKEN_TTL_MINUTES,
+                },
+            )
+    except httpx.RequestError as error:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Authentication service is unavailable",
+        ) from error
+
+    if response.status_code in (400, 401, 403):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh session is invalid or expired",
+        )
+    if not response.is_success:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Authentication service returned an error",
+        )
+
+    try:
+        tokens = response.json()
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Authentication service returned invalid data",
+        ) from error
+
+    if (
+        not isinstance(tokens, dict)
+        or not isinstance(tokens.get("accessToken"), str)
+        or not isinstance(tokens.get("refreshToken"), str)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Authentication service returned invalid refresh tokens",
+        )
+    return {
+        "accessToken": tokens["accessToken"],
+        "refreshToken": tokens["refreshToken"],
+    }

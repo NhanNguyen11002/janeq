@@ -8,7 +8,7 @@ function isValidUser(user) {
 }
 
 async function fetchCurrentUser(signal) {
-  const data = await apiRequest('/auth/me', { signal })
+  const data = await apiRequest('/auth/me', { signal, authRequired: true })
   if (!isValidUser(data)) {
     throw new Error('The server returned invalid session information.')
   }

@@ -70,12 +70,16 @@ Each submitted attempt is saved as `backend/exports/{attemptId}.json`.
 }
 ```
 
-The browser stores the access token only in an HttpOnly cookie; JavaScript cannot
-read it. Local HTTP development sets `Secure=false` so the cookie works without
-TLS. Do not use that setting outside local development; production must use
-HTTPS with `AUTH_COOKIE_SECURE=true`. Unsafe requests validate the `Origin`
-header against `TRUSTED_ORIGINS`, and the cookie uses `SameSite=Lax`.
+The browser stores both the access and refresh tokens only in HttpOnly cookies;
+JavaScript cannot read them. The backend refreshes an expired access token
+automatically while the refresh token remains valid. The refresh cookie is
+restricted to the refresh endpoint. Local HTTP development sets `Secure=false`
+so the cookies work without TLS. Do not use that setting outside local
+development; production must use HTTPS with `AUTH_COOKIE_SECURE=true`. Unsafe
+requests validate the `Origin` header against `TRUSTED_ORIGINS`, and the cookies
+use `SameSite=Lax`.
 
-Docker Compose reads these cookie settings from environment variables, with
-development-safe defaults. Set `AUTH_COOKIE_SECURE=true` when serving the app
-over HTTPS.
+Docker Compose reads these settings from environment variables. The development
+default `AUTH_ACCESS_TOKEN_TTL_MINUTES=1` is intentionally short to exercise
+refresh behavior; increase it for normal use. Set `AUTH_COOKIE_SECURE=true` when
+serving the app over HTTPS.

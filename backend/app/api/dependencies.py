@@ -11,6 +11,14 @@ class InvalidAuthSession(HTTPException):
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired session")
 
 
+class InvalidRefreshSession(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh session is invalid or expired",
+        )
+
+
 def validate_request_origin(request: Request) -> None:
     origin = request.headers.get("origin")
     if origin is not None and origin not in TRUSTED_ORIGINS:
