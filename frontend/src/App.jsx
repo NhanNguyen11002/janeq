@@ -58,7 +58,7 @@ function App() {
             {categories.map((category) => (
               <li className="category-card" key={category.name}>
                 <span>{category.name}</span>
-                <span className="count">{category.question_count} questions</span>
+                <span className="count">{category.questionCount} questions</span>
               </li>
             ))}
           </ul>

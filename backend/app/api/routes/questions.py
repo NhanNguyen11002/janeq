@@ -13,7 +13,7 @@ def get_categories() -> dict[str, list[dict[str, Any]]]:
     counts = Counter(question["type"] for question in questions)
     return {
         "categories": [
-            {"name": name, "question_count": count}
+            {"name": name, "questionCount": count}
             for name, count in counts.items()
         ]
     }
