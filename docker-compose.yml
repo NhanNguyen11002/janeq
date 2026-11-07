@@ -3,6 +3,10 @@ services:
     build:
       context: ./backend
     working_dir: /app
+    environment:
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-false}
+      AUTH_COOKIE_SAMESITE: ${AUTH_COOKIE_SAMESITE:-lax}
+      TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
     command:
       - uvicorn
       - app.main:app

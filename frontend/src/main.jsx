@@ -5,6 +5,12 @@ import { RouterProvider } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { router } from './app/router.jsx'
 
+try {
+  window.localStorage.removeItem('janeq.session')
+} catch (error) {
+  console.warn('Unable to clear the previous browser session.', error)
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>

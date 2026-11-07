@@ -49,10 +49,12 @@ for login details.
 
 ## API
 
-- `POST /api/auth/login` — authenticate through DummyJSON and return the user and access token.
+- `POST /api/auth/login` — authenticate through DummyJSON, set an HttpOnly session cookie, and return the public user profile.
+- `GET /api/auth/me` — return the profile associated with the session cookie.
+- `POST /api/auth/logout` — clear the session cookie.
 - `GET /api/categories` — list categories and question counts.
 - `GET /api/questions?category=...` — list questions without correct answers.
-- `POST /api/attempts` — submit and score an attempt. Requires `Authorization: Bearer <token>`.
+- `POST /api/attempts` — submit and score an attempt. Requires the session cookie.
 - `GET /api/attempts` — list the authenticated user's attempt history.
 - `GET /api/attempts/{attempt_id}` — read one of the authenticated user's attempts.
 - `GET /api/attempts/{attempt_id}/export` — download an attempt as JSON.
@@ -67,3 +69,13 @@ Each submitted attempt is saved as `backend/exports/{attemptId}.json`.
   }
 }
 ```
+
+The browser stores the access token only in an HttpOnly cookie; JavaScript cannot
+read it. Local HTTP development sets `Secure=false` so the cookie works without
+TLS. Do not use that setting outside local development; production must use
+HTTPS with `AUTH_COOKIE_SECURE=true`. Unsafe requests validate the `Origin`
+header against `TRUSTED_ORIGINS`, and the cookie uses `SameSite=Lax`.
+
+Docker Compose reads these cookie settings from environment variables, with
+development-safe defaults. Set `AUTH_COOKIE_SECURE=true` when serving the app
+over HTTPS.

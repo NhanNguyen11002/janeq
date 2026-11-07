@@ -1,10 +1,9 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import FileResponse
 
-from app.api.dependencies import get_current_user
-from app.core.config import EXPORTS_DIR
+from app.api.dependencies import get_current_user, validate_request_origin
 from app.repositories.attempts import get_owned_attempt, read_attempt, read_attempts_index
 from app.repositories.questions import questions
 from app.schemas.attempts import AttemptSubmission
@@ -15,9 +14,11 @@ router = APIRouter(prefix="/api/attempts")
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def submit_attempt(
+    request: Request,
     submission: AttemptSubmission,
     user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
+    validate_request_origin(request)
     return create_attempt(submission, user, questions)
 
 

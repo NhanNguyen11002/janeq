@@ -7,13 +7,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 
 function LoginPage() {
-  const { isAuthenticated, login } = useAuth()
+  const { isAuthenticated, isLoading: isCheckingSession, login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  if (isCheckingSession) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-muted-foreground">Checking your session…</p>
+      </main>
+    )
+  }
 
   if (isAuthenticated) {
     return <Navigate to="/" replace />
@@ -53,6 +61,12 @@ function LoginPage() {
           </CardHeader>
           <CardContent>
             <form className="space-y-5" onSubmit={handleSubmit}>
+              {location.state?.notice && (
+                <Alert>
+                  <AlertTitle>Sign-out notice</AlertTitle>
+                  <AlertDescription>{location.state.notice}</AlertDescription>
+                </Alert>
+              )}
               {error && (
                 <Alert variant="destructive">
                   <AlertTitle>Sign-in failed</AlertTitle>

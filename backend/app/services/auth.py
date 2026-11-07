@@ -12,7 +12,6 @@ async def get_current_user(token: str | None) -> dict[str, Any]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Login required",
-            headers={"WWW-Authenticate": "Bearer"},
         )
 
     try:
@@ -31,7 +30,6 @@ async def get_current_user(token: str | None) -> dict[str, Any]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
         )
     if not response.is_success:
         raise HTTPException(

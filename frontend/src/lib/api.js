@@ -27,7 +27,6 @@ export async function apiRequest(
   {
     method = 'GET',
     body,
-    token,
     authRequired = false,
     signal,
     responseType = 'json',
@@ -45,9 +44,6 @@ export async function apiRequest(
       requestBody = JSON.stringify(body)
     }
   }
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
-  }
 
   let response
   try {
@@ -56,6 +52,7 @@ export async function apiRequest(
       headers,
       body: requestBody,
       signal,
+      credentials: 'include',
     })
   } catch (error) {
     if (error.name === 'AbortError') {

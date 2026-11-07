@@ -1,82 +1,107 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { apiRequest } from '@/lib/api'
+import { ApiError, apiRequest } from '@/lib/api'
 
-const SESSION_STORAGE_KEY = 'janeq.session'
 const AuthContext = createContext(null)
 
-function readStoredSession() {
-  const storedSession = window.localStorage.getItem(SESSION_STORAGE_KEY)
-  if (!storedSession) {
-    return null
-  }
+function isValidUser(user) {
+  return typeof user?.id === 'number' && typeof user?.username === 'string'
+}
 
-  try {
-    const session = JSON.parse(storedSession)
-    if (
-      typeof session?.token === 'string' &&
-      session.token.length > 0 &&
-      typeof session.user?.id === 'number'
-    ) {
-      return session
-    }
-  } catch {
-    window.localStorage.removeItem(SESSION_STORAGE_KEY)
+async function fetchCurrentUser(signal) {
+  const data = await apiRequest('/auth/me', { signal })
+  if (!isValidUser(data)) {
+    throw new Error('The server returned invalid session information.')
   }
-
-  window.localStorage.removeItem(SESSION_STORAGE_KEY)
-  return null
+  return data
 }
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(readStoredSession)
+  const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [sessionError, setSessionError] = useState('')
 
-  const logout = useCallback(() => {
-    window.localStorage.removeItem(SESSION_STORAGE_KEY)
-    setSession(null)
+  const refreshSession = useCallback(async (showLoading = true) => {
+    if (showLoading) {
+      setIsLoading(true)
+      setSessionError('')
+    }
+    try {
+      const data = await fetchCurrentUser()
+      setUser(data)
+      return data
+    } catch (error) {
+      setUser(null)
+      if (!(error instanceof ApiError && error.statusCode === 401)) {
+        setSessionError(error.message || 'Unable to verify your sign-in. Please try again.')
+      }
+      return null
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   useEffect(() => {
-    window.addEventListener('janeq:unauthorized', logout)
-    return () => window.removeEventListener('janeq:unauthorized', logout)
-  }, [logout])
+    const controller = new AbortController()
+    fetchCurrentUser(controller.signal)
+      .then(setUser)
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          setUser(null)
+          if (!(error instanceof ApiError && error.statusCode === 401)) {
+            setSessionError(error.message || 'Unable to verify your sign-in. Please try again.')
+          }
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setIsLoading(false)
+        }
+      })
+    return () => controller.abort()
+  }, [])
+
+  const clearSession = useCallback(() => {
+    setUser(null)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('janeq:unauthorized', clearSession)
+    return () => window.removeEventListener('janeq:unauthorized', clearSession)
+  }, [clearSession])
 
   const login = useCallback(async (username, password) => {
     const data = await apiRequest('/auth/login', {
       method: 'POST',
       body: { username, password },
     })
-    if (
-      typeof data?.accessToken !== 'string' ||
-      typeof data?.id !== 'number' ||
-      typeof data?.username !== 'string'
-    ) {
+    if (!isValidUser(data)) {
       throw new Error('The server returned incomplete login information. Please try again.')
     }
 
-    const nextSession = {
-      token: data.accessToken,
-      user: {
-        id: data.id,
-        username: data.username,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        image: data.image,
-      },
+    setUser(data)
+    setSessionError('')
+    return data
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      await apiRequest('/auth/logout', { method: 'POST' })
+    } finally {
+      setUser(null)
     }
-    window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(nextSession))
-    setSession(nextSession)
-    return nextSession.user
   }, [])
 
   const value = useMemo(
     () => ({
-      user: session?.user ?? null,
-      token: session?.token ?? null,
-      isAuthenticated: Boolean(session?.token),
+      user,
+      isAuthenticated: Boolean(user),
+      isLoading,
+      sessionError,
+      refreshSession,
       login,
       logout,
     }),
-    [session, login, logout],
+    [user, isLoading, sessionError, refreshSession, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

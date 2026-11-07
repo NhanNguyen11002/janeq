@@ -34,9 +34,18 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  function handleLogout() {
-    logout()
-    navigate('/login', { replace: true })
+  async function handleLogout() {
+    try {
+      await logout()
+      navigate('/login', { replace: true })
+    } catch {
+      navigate('/login', {
+        replace: true,
+        state: {
+          notice: 'The server could not confirm sign-out. Please try again when the connection is restored.',
+        },
+      })
+    }
   }
 
   return (

@@ -1,15 +1,31 @@
 from typing import Any
 
-from fastapi import Depends
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Cookie, Depends, HTTPException, Request, status
 
+from app.core.config import AUTH_COOKIE_NAME, TRUSTED_ORIGINS
 from app.services.auth import get_current_user as authenticate_user
 
-_bearer_scheme = HTTPBearer(auto_error=False)
+
+class InvalidAuthSession(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired session")
+
+
+def validate_request_origin(request: Request) -> None:
+    origin = request.headers.get("origin")
+    if origin is not None and origin not in TRUSTED_ORIGINS:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Untrusted request origin",
+        )
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
+    token: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
 ) -> dict[str, Any]:
-    token = credentials.credentials if credentials is not None else None
-    return await authenticate_user(token)
+    try:
+        return await authenticate_user(token)
+    except HTTPException as error:
+        if error.status_code == status.HTTP_401_UNAUTHORIZED:
+            raise InvalidAuthSession() from error
+        raise
