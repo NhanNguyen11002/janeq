@@ -15,3 +15,8 @@ dist/
 .DS_Store
 .idea/
 .vscode/
+
+# Runtime attempt data
+/backend/data/attempts.json
+/backend/exports/*.json
+!/backend/exports/.gitkeep
