@@ -17,6 +17,28 @@ The backend and frontend source directories are bind-mounted for live reload.
 Question data is mounted with the backend source, and exported attempts can be
 written to `backend/exports/`.
 
+## Demo login accounts
+
+Use any of these DummyJSON demo accounts to sign in to the web app:
+
+| Name | Username | Password |
+| --- | --- | --- |
+| Emily Johnson | `emilys` | `emilyspass` |
+| Michael Williams | `michaelw` | `michaelwpass` |
+| Sophia Brown | `sophiab` | `sophiabpass` |
+| James Davis | `jamesd` | `jamesdpass` |
+| Emma Miller | `emmaj` | `emmajpass` |
+| Olivia Wilson | `oliviaw` | `oliviawpass` |
+| Alexander Jones | `alexanderj` | `alexanderjpass` |
+| Ava Taylor | `avat` | `avatpass` |
+| Ethan Martinez | `ethanm` | `ethanmpass` |
+| Isabella Anderson | `isabellad` | `isabelladpass` |
+
+These are public test credentials, not real user accounts. DummyJSON currently
+provides 208 users; see the [DummyJSON users endpoint](https://dummyjson.com/users?limit=0)
+for the full list and the [authentication docs](https://dummyjson.com/docs/auth)
+for login details.
+
 ## API
 
 - `POST /api/auth/login` — authenticate through DummyJSON and return the user and access token.
