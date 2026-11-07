@@ -1,9 +1,17 @@
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+const srcDir = fileURLToPath(new URL('./src', import.meta.url))
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': srcDir,
+    },
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,
