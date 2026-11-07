@@ -15,7 +15,7 @@ async def get_current_user(token: str | None) -> dict[str, Any]:
         )
 
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(
                 f"{DUMMYJSON_URL}/auth/me",
                 headers={"Authorization": f"Bearer {token}"},

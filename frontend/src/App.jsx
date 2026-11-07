@@ -28,6 +28,10 @@ function App() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
+  function startQuiz(category) {
+    navigate(`/quiz?category=${encodeURIComponent(category)}`)
+  }
+
   useEffect(() => {
     const controller = new AbortController()
 
@@ -93,6 +97,7 @@ function App() {
         isLoading={isLoading}
         onRetry={retryLoadingCategories}
         onSelect={setSelectedCategory}
+        onStart={startQuiz}
         selectedCategory={selectedCategory}
       />
     </main>

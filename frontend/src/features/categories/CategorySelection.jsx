@@ -17,8 +17,11 @@ function CategorySelection({
   error,
   isLoading,
   onSelect,
+  onStart,
   onRetry,
 }) {
+  const selectedTopic = categories.find((category) => category.name === selectedCategory)
+
   return (
     <Card>
       <CardHeader className="gap-2 border-b pb-5">
@@ -86,6 +89,13 @@ function CategorySelection({
                 <span className="font-medium text-foreground">{selectedCategory}</span>
               </p>
             )}
+            <Button
+              disabled={!selectedTopic || selectedTopic.questionCount === 0}
+              onClick={() => onStart(selectedCategory)}
+              size="lg"
+            >
+              Start quiz
+            </Button>
           </>
         )}
 
