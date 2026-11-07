@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import ConfirmSubmissionDialog from '@/features/quiz/ConfirmSubmissionDialog'
 import QuestionNavigator from '@/features/quiz/QuestionNavigator'
 import QuizQuestion from '@/features/quiz/QuizQuestion'
+import QuizResultReview from '@/features/quiz/QuizResultReview'
 import { apiRequest } from '@/lib/api'
 
 function isQuestionList(data) {
@@ -180,6 +181,7 @@ function QuizPage() {
             <p className="text-sm text-muted-foreground">
               Your answers have been saved to your quiz history.
             </p>
+            <QuizResultReview results={result.results} />
             <Button onClick={() => navigate('/')}>Choose another topic</Button>
           </CardContent>
         </Card>

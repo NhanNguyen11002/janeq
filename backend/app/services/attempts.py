@@ -44,6 +44,7 @@ def create_attempt(
             {
                 "questionId": question_id,
                 "question": question["question"],
+                "options": question["options"],
                 "selectedAnswer": selected_answer,
                 "correctAnswer": correct_answer,
                 "isCorrect": selected_answer == correct_answer,
