@@ -2,13 +2,29 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { apiRequest } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import './App.css'
+import AppHeader from '@/components/AppHeader'
+import CategorySelection from '@/features/categories/CategorySelection'
+
+function isCategoryList(data) {
+  return (
+    Array.isArray(data?.categories) &&
+    data.categories.every(
+      (category) =>
+        typeof category?.name === 'string' &&
+        category.name.trim().length > 0 &&
+        Number.isInteger(category.questionCount) &&
+        category.questionCount >= 0,
+    )
+  )
+}
 
 function App() {
   const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [retryCount, setRetryCount] = useState(0)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -18,7 +34,14 @@ function App() {
     async function loadCategories() {
       try {
         const data = await apiRequest('/categories', { signal: controller.signal })
+        if (!isCategoryList(data)) {
+          throw new Error('The server returned categories in an unexpected format.')
+        }
         setCategories(data.categories)
+        setSelectedCategory((current) =>
+          data.categories.some((category) => category.name === current) ? current : '',
+        )
+        setError('')
       } catch (loadError) {
         if (loadError.name !== 'AbortError') {
           setError(loadError.message || 'Could not load categories. Please try again.')
@@ -32,9 +55,10 @@ function App() {
 
     loadCategories()
     return () => controller.abort()
-  }, [])
+  }, [retryCount])
 
   async function handleLogout() {
+    setIsLoggingOut(true)
     try {
       await logout()
       navigate('/login', { replace: true })
@@ -45,53 +69,32 @@ function App() {
           notice: 'The server could not confirm sign-out. Please try again when the connection is restored.',
         },
       })
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
+  function retryLoadingCategories() {
+    setError('')
+    setIsLoading(true)
+    setRetryCount((count) => count + 1)
+  }
+
   return (
-    <main className="page">
-      <header className="mb-12 flex items-start justify-between gap-4">
-        <div className="hero mb-0">
-          <p className="eyebrow">ONLINE QUIZ PLATFORM</p>
-          <h1>JaneQ</h1>
-          <p>Welcome, {user?.firstName || user?.username}.</p>
-        </div>
-        <Button onClick={handleLogout} variant="outline">
-          Log out
-        </Button>
-      </header>
-
-      <section className="panel" aria-labelledby="categories-title">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">QUESTION BANK</p>
-            <h2 id="categories-title">Available categories</h2>
-          </div>
-          <span className="status">
-            <span className="status-dot" />
-            {isLoading ? 'Loading' : 'API connected'}
-          </span>
-        </div>
-
-        {error ? (
-          <p className="message error" role="alert">
-            {error}
-          </p>
-        ) : isLoading ? (
-          <p className="message">Loading categories…</p>
-        ) : categories.length ? (
-          <ul className="category-list">
-            {categories.map((category) => (
-              <li className="category-card" key={category.name}>
-                <span>{category.name}</span>
-                <span className="count">{category.questionCount} questions</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="message">No categories are available.</p>
-        )}
-      </section>
+    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <AppHeader
+        isLoggingOut={isLoggingOut}
+        onLogout={handleLogout}
+        user={user}
+      />
+      <CategorySelection
+        categories={categories}
+        error={error}
+        isLoading={isLoading}
+        onRetry={retryLoadingCategories}
+        onSelect={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
     </main>
   )
 }
