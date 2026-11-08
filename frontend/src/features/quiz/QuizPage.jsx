@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, RefreshCw } from 'lucide-react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useBlocker, useNavigate, useSearchParams } from 'react-router-dom'
 import AppHeader from '@/components/AppHeader'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import AttemptExportButton from '@/features/attempts/AttemptExportButton'
 import AttemptResultReview from '@/features/attempts/AttemptResultReview'
 import ConfirmSubmissionDialog from '@/features/quiz/ConfirmSubmissionDialog'
+import LeaveQuizDialog from '@/features/quiz/LeaveQuizDialog'
 import QuestionNavigator from '@/features/quiz/QuestionNavigator'
 import QuizQuestion from '@/features/quiz/QuizQuestion'
 import { apiRequest } from '@/lib/api'
@@ -42,8 +43,20 @@ function QuizPage() {
   const [submitError, setSubmitError] = useState('')
   const [result, setResult] = useState(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isLeavingQuiz, setIsLeavingQuiz] = useState(false)
+  const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false)
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const hasUnsavedProgress =
+    questions.length > 0 && Object.keys(answers).length > 0 && result === null
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasUnsavedProgress &&
+      !isLeavingQuiz &&
+      (currentLocation.pathname !== nextLocation.pathname ||
+        currentLocation.search !== nextLocation.search ||
+        currentLocation.hash !== nextLocation.hash),
+  )
 
   useEffect(() => {
     if (!category) {
@@ -80,6 +93,18 @@ function QuizPage() {
     return () => controller.abort()
   }, [category, navigate, retryCount])
 
+  useEffect(() => {
+    if (!hasUnsavedProgress || isLeavingQuiz) return undefined
+
+    function warnBeforeUnload(event) {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', warnBeforeUnload)
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload)
+  }, [hasUnsavedProgress, isLeavingQuiz])
+
   const unansweredCount = useMemo(
     () => questions.filter((question) => !answers[question.id]).length,
     [answers, questions],
@@ -99,6 +124,33 @@ function QuizPage() {
       })
     } finally {
       setIsLoggingOut(false)
+    }
+  }
+
+  function requestLogout() {
+    if (hasUnsavedProgress && !isLeavingQuiz) {
+      setIsLogoutConfirmationOpen(true)
+      return
+    }
+    handleLogout()
+  }
+
+  function stayOnQuiz() {
+    if (blocker.state === 'blocked') {
+      blocker.reset()
+    }
+    setIsLogoutConfirmationOpen(false)
+  }
+
+  function confirmLeaveQuiz() {
+    setIsLeavingQuiz(true)
+    if (isLogoutConfirmationOpen) {
+      setIsLogoutConfirmationOpen(false)
+      handleLogout()
+      return
+    }
+    if (blocker.state === 'blocked') {
+      blocker.proceed()
     }
   }
 
@@ -135,7 +187,7 @@ function QuizPage() {
 
   return (
     <main className="janeq-enter mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      <AppHeader isLoggingOut={isLoggingOut} onLogout={handleLogout} user={user} />
+      <AppHeader isLoggingOut={isLoggingOut} onLogout={requestLogout} user={user} />
 
       <div className="mb-5">
         <Button onClick={() => navigate('/')} variant="ghost">
@@ -278,6 +330,11 @@ function QuizPage() {
         }}
         onConfirm={submitQuiz}
         unansweredCount={unansweredCount}
+      />
+      <LeaveQuizDialog
+        isOpen={blocker.state === 'blocked' || isLogoutConfirmationOpen}
+        onLeave={confirmLeaveQuiz}
+        onStay={stayOnQuiz}
       />
     </main>
   )
