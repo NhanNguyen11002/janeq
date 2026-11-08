@@ -114,8 +114,12 @@ function AttemptHistoryPage() {
               aria-busy="true"
               aria-live="polite"
               className="flex items-center justify-center gap-3 py-12 text-muted-foreground"
+              role="status"
             >
-              <RefreshCw aria-hidden="true" className="size-5 animate-spin" />
+              <RefreshCw
+                aria-hidden="true"
+                className="size-5 animate-spin motion-reduce:animate-none"
+              />
               Loading quiz history…
             </div>
           ) : error ? (
@@ -154,7 +158,7 @@ function AttemptHistoryPage() {
                     <Card className="cursor-pointer transition-colors hover:bg-muted/40">
                       <CardContent className="flex items-center justify-between gap-4 py-4">
                         <div className="min-w-0 space-y-1">
-                          <h3 className="truncate font-semibold">{attempt.category}</h3>
+                          <h3 className="break-words font-semibold">{attempt.category}</h3>
                           <p className="text-sm text-muted-foreground">
                             {formatSubmittedAt(attempt.submittedAt)}
                           </p>

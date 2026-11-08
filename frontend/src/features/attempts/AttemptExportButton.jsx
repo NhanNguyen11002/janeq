@@ -49,9 +49,14 @@ function AttemptExportButton({ attemptId, submittedAt }) {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <Button disabled={isExporting} onClick={downloadExport} variant="outline">
+      <Button
+        aria-busy={isExporting}
+        disabled={isExporting}
+        onClick={downloadExport}
+        variant="outline"
+      >
         {isExporting ? (
-          <RefreshCw aria-hidden="true" className="animate-spin" />
+          <RefreshCw aria-hidden="true" className="animate-spin motion-reduce:animate-none" />
         ) : (
           <Download aria-hidden="true" />
         )}

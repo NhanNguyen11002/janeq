@@ -109,9 +109,14 @@ function AttemptDetailPage() {
         <Card>
           <CardContent
             aria-busy="true"
+            aria-live="polite"
             className="flex items-center justify-center gap-3 py-16 text-muted-foreground"
+            role="status"
           >
-            <RefreshCw aria-hidden="true" className="size-5 animate-spin" />
+            <RefreshCw
+              aria-hidden="true"
+              className="size-5 animate-spin motion-reduce:animate-none"
+            />
             Loading attempt…
           </CardContent>
         </Card>
@@ -136,7 +141,7 @@ function AttemptDetailPage() {
             <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
               COMPLETED ATTEMPT
             </p>
-            <CardTitle className="text-2xl">{attempt.category}</CardTitle>
+            <CardTitle className="break-words text-2xl">{attempt.category}</CardTitle>
             <CardDescription>{formatSubmittedAt(attempt.submittedAt)}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">

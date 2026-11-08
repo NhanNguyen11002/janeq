@@ -4,7 +4,7 @@ function CategoryCard({ category, isSelected, onSelect }) {
   return (
     <button
       aria-pressed={isSelected}
-      className={`group flex min-h-36 w-full cursor-pointer flex-col items-start justify-between rounded-xl border p-5 text-left transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none ${
+      className={`group flex min-h-36 w-full cursor-pointer flex-col items-start justify-between rounded-xl border p-5 text-left transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:cursor-not-allowed ${
         isSelected
           ? 'border-primary bg-primary/5'
           : 'border-border bg-card hover:border-primary/50 hover:bg-muted/50'
@@ -13,7 +13,7 @@ function CategoryCard({ category, isSelected, onSelect }) {
       type="button"
     >
       <span className="flex w-full items-start justify-between gap-3">
-        <span className="text-base font-semibold leading-snug text-foreground">
+        <span className="break-words text-base font-semibold leading-snug text-foreground">
           {category.name}
         </span>
         <span

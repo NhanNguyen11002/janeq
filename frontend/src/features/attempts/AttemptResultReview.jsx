@@ -4,9 +4,9 @@ function AttemptResultReview({ results }) {
   return (
     <section aria-labelledby="answer-review-title" className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold" id="answer-review-title">
+        <h3 className="text-lg font-semibold" id="answer-review-title">
           Answer review
-        </h2>
+        </h3>
         <p className="text-sm text-muted-foreground">
           Review your answer and the correct answer for each question.
         </p>
@@ -25,7 +25,7 @@ function AttemptResultReview({ results }) {
                 <span className="shrink-0 text-xs font-semibold tracking-wide text-muted-foreground">
                   QUESTION {index + 1}
                 </span>
-                <p className="font-medium leading-relaxed text-foreground">
+                <p className="min-w-0 break-words font-medium leading-relaxed text-foreground">
                   {item.question}
                 </p>
               </div>
@@ -64,7 +64,7 @@ function AttemptResultReview({ results }) {
 
                     return (
                       <li
-                        className={`flex flex-wrap items-center justify-between gap-2 rounded-md border p-3 text-sm ${
+                        className={`flex min-w-0 flex-wrap items-start justify-between gap-2 rounded-md border p-3 text-sm ${
                           isMarkedCorrect || (!isSelected && isCorrect)
                             ? 'border-green-600/30 bg-green-500/10 text-green-800 dark:text-green-300'
                             : isMarkedIncorrect
@@ -73,7 +73,7 @@ function AttemptResultReview({ results }) {
                         }`}
                         key={`${item.questionId}-${optionIndex}`}
                       >
-                        <span>{option}</span>
+                        <span className="min-w-0 flex-1 break-words">{option}</span>
                         {optionLabel && (
                           <span className="inline-flex items-center gap-1 font-semibold">
                             {isMarkedIncorrect ? (

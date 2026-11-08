@@ -146,9 +146,15 @@ function QuizPage() {
 
       {isLoading ? (
         <Card>
-          <CardContent className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
-            <RefreshCw aria-hidden="true" className="size-5 animate-spin" />
-            Loading questions…
+          <CardContent
+            aria-busy="true"
+            className="flex items-center justify-center gap-3 py-16 text-muted-foreground"
+          >
+            <RefreshCw
+              aria-hidden="true"
+              className="size-5 animate-spin motion-reduce:animate-none"
+            />
+            <span aria-live="polite" role="status">Loading questions…</span>
           </CardContent>
         </Card>
       ) : loadError ? (

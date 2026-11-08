@@ -10,7 +10,9 @@ function ProtectedRoute({ children }) {
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center px-4">
-        <p className="text-sm text-muted-foreground">Checking your session…</p>
+        <p aria-live="polite" className="text-sm text-muted-foreground" role="status">
+          Checking your session…
+        </p>
       </main>
     )
   }

@@ -25,6 +25,7 @@ function ConfirmSubmissionDialog({
   return (
     <dialog
       aria-labelledby="submit-dialog-title"
+      aria-busy={isSubmitting}
       className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-xl border bg-background p-0 text-foreground shadow-xl backdrop:bg-black/50"
       onCancel={(event) => {
         event.preventDefault()

@@ -18,7 +18,9 @@ function LoginPage() {
   if (isCheckingSession) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-sm text-muted-foreground">Checking your session…</p>
+        <p aria-live="polite" className="text-sm text-muted-foreground" role="status">
+          Checking your session…
+        </p>
       </main>
     )
   }
@@ -60,7 +62,7 @@ function LoginPage() {
             <CardDescription>Use your DummyJSON demo account to sign in.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form aria-busy={isSubmitting} className="space-y-5" onSubmit={handleSubmit}>
               {location.state?.notice && (
                 <Alert>
                   <AlertTitle>Sign-out notice</AlertTitle>
@@ -68,7 +70,7 @@ function LoginPage() {
                 </Alert>
               )}
               {error && (
-                <Alert variant="destructive">
+                <Alert id="sign-in-error" variant="destructive">
                   <AlertTitle>Sign-in failed</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -81,6 +83,9 @@ function LoginPage() {
                 <Input
                   autoComplete="username"
                   autoFocus
+                  disabled={isSubmitting}
+                  aria-describedby={error ? 'sign-in-error' : undefined}
+                  aria-invalid={Boolean(error)}
                   id="username"
                   name="username"
                   onChange={(event) => setUsername(event.target.value)}
@@ -96,6 +101,9 @@ function LoginPage() {
                 </label>
                 <Input
                   autoComplete="current-password"
+                  disabled={isSubmitting}
+                  aria-describedby={error ? 'sign-in-error' : undefined}
+                  aria-invalid={Boolean(error)}
                   id="password"
                   name="password"
                   onChange={(event) => setPassword(event.target.value)}

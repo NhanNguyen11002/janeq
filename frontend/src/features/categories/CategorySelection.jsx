@@ -112,7 +112,7 @@ function CategorySelection({
           {isLoading && (
             <RefreshCw
               aria-hidden="true"
-              className="size-4 animate-spin text-muted-foreground"
+              className="size-4 animate-spin text-muted-foreground motion-reduce:animate-none"
             />
           )}
         </div>
