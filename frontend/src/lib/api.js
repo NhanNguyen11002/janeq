@@ -47,7 +47,7 @@ async function fetchResponse(url, init, { signal, timeoutMs, responseType }) {
     let payload = null
 
     if (response.status !== 204) {
-      if (responseType === 'blob') {
+      if (responseType === 'blob' && response.ok) {
         payload = await response.blob()
       } else {
         try {

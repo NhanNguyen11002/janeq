@@ -6,10 +6,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/contexts/AuthContext'
+import AttemptExportButton from '@/features/attempts/AttemptExportButton'
+import AttemptResultReview from '@/features/attempts/AttemptResultReview'
 import ConfirmSubmissionDialog from '@/features/quiz/ConfirmSubmissionDialog'
 import QuestionNavigator from '@/features/quiz/QuestionNavigator'
 import QuizQuestion from '@/features/quiz/QuizQuestion'
-import QuizResultReview from '@/features/quiz/QuizResultReview'
 import { apiRequest } from '@/lib/api'
 
 function isQuestionList(data) {
@@ -181,8 +182,14 @@ function QuizPage() {
             <p className="text-sm text-muted-foreground">
               Your answers have been saved to your quiz history.
             </p>
-            <QuizResultReview results={result.results} />
-            <Button onClick={() => navigate('/')}>Choose another topic</Button>
+            <AttemptResultReview results={result.results} />
+            <div className="flex flex-wrap gap-3">
+              <AttemptExportButton
+                attemptId={result.attemptId}
+                submittedAt={result.submittedAt}
+              />
+              <Button onClick={() => navigate('/')}>Choose another topic</Button>
+            </div>
           </CardContent>
         </Card>
       ) : questions.length === 0 ? (

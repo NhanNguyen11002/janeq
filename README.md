@@ -70,6 +70,11 @@ Each submitted attempt is saved as `backend/exports/{attemptId}.json`.
 }
 ```
 
+The frontend provides a quiz history page with links to attempt details. Older
+attempt records without answer options are enriched from the question bank when
+their saved question text and category still match; existing export files are
+not modified.
+
 The browser stores both the access and refresh tokens only in HttpOnly cookies;
 JavaScript cannot read them. The backend refreshes an expired access token
 automatically while the refresh token remains valid. The refresh cookie is

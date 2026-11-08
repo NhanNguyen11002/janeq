@@ -1,4 +1,5 @@
-import { LogOut } from 'lucide-react'
+import { History, LogOut } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
 function AppHeader({ user, isLoggingOut, onLogout }) {
@@ -15,10 +16,18 @@ function AppHeader({ user, isLoggingOut, onLogout }) {
           Welcome, {user?.firstName || user?.username}.
         </p>
       </div>
-      <Button disabled={isLoggingOut} onClick={onLogout} variant="outline">
-        <LogOut aria-hidden="true" />
-        {isLoggingOut ? 'Signing out…' : 'Log out'}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button asChild variant="outline">
+          <Link to="/history">
+            <History aria-hidden="true" />
+            History
+          </Link>
+        </Button>
+        <Button disabled={isLoggingOut} onClick={onLogout} variant="outline">
+          <LogOut aria-hidden="true" />
+          {isLoggingOut ? 'Signing out…' : 'Log out'}
+        </Button>
+      </div>
     </header>
   )
 }
