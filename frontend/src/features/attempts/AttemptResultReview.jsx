@@ -18,7 +18,8 @@ function AttemptResultReview({ results }) {
 
           return (
             <li
-              className="rounded-lg border p-4 sm:p-5"
+              className="janeq-enter rounded-lg border p-4 sm:p-5"
+              style={{ '--janeq-enter-delay': `${Math.min(index, 6) * 35}ms` }}
               key={item.questionId}
             >
               <div className="mb-4 flex items-start gap-3">

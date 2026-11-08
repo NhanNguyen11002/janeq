@@ -17,7 +17,7 @@ function LoginPage() {
 
   if (isCheckingSession) {
     return (
-      <main className="flex min-h-screen items-center justify-center">
+      <main className="janeq-enter flex min-h-screen items-center justify-center">
         <p aria-live="polite" className="text-sm text-muted-foreground" role="status">
           Checking your session…
         </p>
@@ -46,7 +46,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
+    <main className="janeq-enter flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
       <div className="w-full max-w-md">
         <header className="mb-8 text-center">
           <p className="mb-2 text-sm font-semibold tracking-[0.2em] text-muted-foreground">

@@ -60,6 +60,70 @@ body {
   margin: 0;
 }
 
+@keyframes janeq-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes janeq-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes janeq-backdrop-enter {
+  from {
+    background-color: rgb(0 0 0 / 0);
+  }
+
+  to {
+    background-color: rgb(0 0 0 / 50%);
+  }
+}
+
+.janeq-enter {
+  animation: janeq-enter 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--janeq-enter-delay, 0ms);
+}
+
+dialog[open] {
+  animation: janeq-dialog-enter 180ms ease-out both;
+}
+
+dialog[open]::backdrop {
+  animation: janeq-backdrop-enter 180ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .janeq-enter,
+  dialog[open],
+  dialog[open]::backdrop {
+    animation: none !important;
+  }
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;

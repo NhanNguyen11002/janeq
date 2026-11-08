@@ -13,7 +13,7 @@ function QuizQuestion({ question, questionNumber, selectedAnswer, onSelect }) {
           const optionId = `option-${question.id}-${index}`
           return (
             <label
-              className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors focus-within:ring-3 focus-within:ring-ring/50 ${
+              className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-[background-color,border-color,box-shadow] duration-200 focus-within:ring-3 focus-within:ring-ring/50 ${
                 isSelected
                   ? 'border-primary bg-primary/5'
                   : 'border-border hover:bg-muted/50'

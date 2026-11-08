@@ -93,7 +93,7 @@ function AttemptDetailPage() {
   }, [logout, navigate])
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="janeq-enter mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <AppHeader isLoggingOut={isLoggingOut} onLogout={handleLogout} user={user} />
 
       <div className="mb-5">
@@ -106,7 +106,7 @@ function AttemptDetailPage() {
       </div>
 
       {isLoading ? (
-        <Card>
+        <Card className="janeq-enter">
           <CardContent
             aria-busy="true"
             aria-live="polite"
@@ -121,7 +121,7 @@ function AttemptDetailPage() {
           </CardContent>
         </Card>
       ) : error ? (
-        <Alert className="items-start" variant="destructive">
+        <Alert className="janeq-enter items-start" variant="destructive">
           <AlertTitle>Could not load attempt</AlertTitle>
           <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span>{error}</span>
@@ -136,7 +136,7 @@ function AttemptDetailPage() {
           </AlertDescription>
         </Alert>
       ) : attempt ? (
-        <Card>
+        <Card className="janeq-enter">
           <CardHeader className="border-b">
             <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
               COMPLETED ATTEMPT

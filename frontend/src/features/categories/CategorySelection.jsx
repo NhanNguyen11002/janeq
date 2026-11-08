@@ -74,12 +74,13 @@ function CategorySelection({
               className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
               role="group"
             >
-              {categories.map((category) => (
+              {categories.map((category, index) => (
                 <CategoryCard
                   category={category}
                   isSelected={selectedCategory === category.name}
                   key={category.name}
                   onSelect={() => onSelect(category.name)}
+                  style={{ '--janeq-enter-delay': `${Math.min(index, 6) * 35}ms` }}
                 />
               ))}
             </div>

@@ -1,4 +1,4 @@
-import { History, LogOut } from 'lucide-react'
+import { History, House, LogOut } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
@@ -17,6 +17,12 @@ function AppHeader({ user, isLoggingOut, onLogout }) {
         </p>
       </div>
       <nav aria-label="Account navigation" className="flex flex-wrap justify-end gap-2">
+        <Button asChild variant="outline">
+          <Link to="/">
+            <House aria-hidden="true" />
+            Home
+          </Link>
+        </Button>
         <Button asChild variant="outline">
           <Link to="/history">
             <History aria-hidden="true" />

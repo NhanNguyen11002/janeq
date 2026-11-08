@@ -88,7 +88,7 @@ function AttemptHistoryPage() {
   }, [logout, navigate])
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="janeq-enter mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <AppHeader isLoggingOut={isLoggingOut} onLogout={handleLogout} user={user} />
 
       <div className="mb-5">
@@ -100,7 +100,7 @@ function AttemptHistoryPage() {
         </Button>
       </div>
 
-      <Card>
+      <Card className="janeq-enter">
         <CardHeader className="border-b">
           <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
             YOUR ACTIVITY
@@ -155,7 +155,7 @@ function AttemptHistoryPage() {
                     className="block rounded-xl focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
                     to={`/history/${encodeURIComponent(attempt.attemptId)}`}
                   >
-                    <Card className="cursor-pointer transition-colors hover:bg-muted/40">
+                    <Card className="cursor-pointer transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:bg-muted/40 hover:shadow-md motion-reduce:transform-none">
                       <CardContent className="flex items-center justify-between gap-4 py-4">
                         <div className="min-w-0 space-y-1">
                           <h3 className="break-words font-semibold">{attempt.category}</h3>

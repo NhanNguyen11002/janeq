@@ -134,7 +134,7 @@ function QuizPage() {
   const currentQuestion = questions[currentIndex]
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="janeq-enter mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <AppHeader isLoggingOut={isLoggingOut} onLogout={handleLogout} user={user} />
 
       <div className="mb-5">
@@ -145,7 +145,7 @@ function QuizPage() {
       </div>
 
       {isLoading ? (
-        <Card>
+        <Card className="janeq-enter">
           <CardContent
             aria-busy="true"
             className="flex items-center justify-center gap-3 py-16 text-muted-foreground"
@@ -158,7 +158,7 @@ function QuizPage() {
           </CardContent>
         </Card>
       ) : loadError ? (
-        <Alert className="items-start" variant="destructive">
+        <Alert className="janeq-enter items-start" variant="destructive">
           <AlertTitle>Could not load this quiz</AlertTitle>
           <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span>{loadError}</span>
@@ -173,7 +173,7 @@ function QuizPage() {
           </AlertDescription>
         </Alert>
       ) : result ? (
-        <Card>
+        <Card className="janeq-enter">
           <CardHeader>
             <CardTitle>Quiz submitted</CardTitle>
             <CardDescription>{category}</CardDescription>
@@ -199,14 +199,14 @@ function QuizPage() {
           </CardContent>
         </Card>
       ) : questions.length === 0 ? (
-        <Alert>
+        <Alert className="janeq-enter">
           <AlertTitle>No questions available</AlertTitle>
           <AlertDescription>
             This topic does not have any questions yet. Choose another topic to continue.
           </AlertDescription>
         </Alert>
       ) : (
-        <Card>
+        <Card className="janeq-enter">
           <CardHeader className="border-b">
             <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
               {category}
@@ -224,14 +224,16 @@ function QuizPage() {
               questions={questions}
             />
             <div className="border-t pt-6">
-              <QuizQuestion
-                onSelect={(answer) =>
-                  setAnswers((current) => ({ ...current, [currentQuestion.id]: answer }))
-                }
-                question={currentQuestion}
-                questionNumber={currentIndex + 1}
-                selectedAnswer={answers[currentQuestion.id] || ''}
-              />
+              <div className="janeq-enter" key={currentQuestion.id}>
+                <QuizQuestion
+                  onSelect={(answer) =>
+                    setAnswers((current) => ({ ...current, [currentQuestion.id]: answer }))
+                  }
+                  question={currentQuestion}
+                  questionNumber={currentIndex + 1}
+                  selectedAnswer={answers[currentQuestion.id] || ''}
+                />
+              </div>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-5">
               <Button

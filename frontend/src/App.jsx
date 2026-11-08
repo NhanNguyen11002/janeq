@@ -85,7 +85,7 @@ function App() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="janeq-enter mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <AppHeader
         isLoggingOut={isLoggingOut}
         onLogout={handleLogout}
