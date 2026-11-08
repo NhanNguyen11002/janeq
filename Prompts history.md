@@ -280,3 +280,9 @@ for 83 exported user prompts total. Response/tool-call records are not user prom
 15. The categories API currently returns data in snake_case. Convert it to
     camelCase.
 16. Suggest a commit message for the latest task.
+
+### Session 3
+
+1. Review the entire project and check whether any functions or code are too
+   complex or need additional comments.
+2. Add a few comments based on your suggestions.

@@ -24,6 +24,7 @@ def add_legacy_question_options(attempt: dict[str, Any]) -> dict[str, Any]:
             except (KeyError, ValueError, IndexError, TypeError):
                 question = None
 
+            # Match both category and text so changed question-bank entries are not attached.
             if (
                 question is not None
                 and question["type"] == attempt.get("category")

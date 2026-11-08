@@ -37,6 +37,7 @@ def write_json_atomic(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary_path: str | None = None
     try:
+        # Keep the temporary file beside the target so os.replace stays atomic.
         with tempfile.NamedTemporaryFile(
             mode="w",
             encoding="utf-8",
@@ -83,6 +84,7 @@ def save_attempt(attempt: dict[str, Any]) -> None:
             if attempt_id in user_attempts:
                 user_attempts.remove(attempt_id)
             if attempt_saved:
+                # Avoid leaving an unindexed export behind if updating the index fails.
                 try:
                     attempt_file.unlink(missing_ok=True)
                 except OSError as cleanup_error:

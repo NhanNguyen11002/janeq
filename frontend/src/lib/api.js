@@ -89,6 +89,7 @@ function throwForResponse({ response, payload }) {
 
 function refreshAuthSession(timeoutMs) {
   if (!refreshRequest) {
+    // Share one refresh operation when multiple requests encounter an expired access token.
     refreshRequest = fetchResponse(
       '/api/auth/refresh',
       { method: 'POST', credentials: 'include' },
